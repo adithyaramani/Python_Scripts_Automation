@@ -1,0 +1,37 @@
+import pandas as pd
+import os
+
+# Folder containing excel sheets separately
+folder_path = "/Users/adithyaramani/Python_Test/Bank_Statements"
+
+# Output file name
+output_file = "Combined_Sheet.xlsx"
+
+#Create excel writer
+with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
+
+    for file in os.listdir(folder_path):
+        if file.endswith((".xlsx", ".xls")):
+
+            file_path = os.path.join(folder_path, file)
+            file_name = os.path.splitext(file)[0]
+
+            try:
+                # read all sheets from file
+                excel_data = pd.read_excel(file_path, sheet_name=None)
+
+                for sheet, df in excel_data.items():
+
+                    #Create unique sheet names
+                    new_sheet_name = f"{file_name}_{sheet}"
+
+                    #Excel limit: 31 characters
+                    new_sheet_name = new_sheet_name[:30]
+
+                    #Write to output
+                    df.to_excel(writer, sheet_name=new_sheet_name, index=False)
+
+            except Exception as e:
+                print(f"Error Processing {file}: {e}") 
+
+print("All Files Combined Successfully!")                      
