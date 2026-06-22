@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 # Folder containing excel sheets separately
-folder_path = "/Users/adithyaramani/Python_Test/Bank_Statements"
+folder_path = "the path name in your local device"
 
 # Output file name
 output_file = "Combined_Sheet.xlsx"
