@@ -1,0 +1,45 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+# URL of the RERA page
+url = "https://rera.karnataka.gov.in/home?language=en"
+
+# Fetch the page content
+response = requests.get(url)
+if response.status_code == 200:
+    print("Successfully fetched the web page.")
+else:
+    print("Failed to fetch the web page.")
+
+# Parse the HTML content
+soup = BeautifulSoup(response.content, 'html.parser')
+
+# Locate the table containing the data (modify based on actual HTML structure)
+# Inspect the website to find the correct table identifier (tag, class, id, etc.)
+table = soup.find('table')  # Remove the class selector for now
+
+# Check if a table was found
+if table:
+    rows = table.find_all('tr')
+
+    # Extract data
+    data = []
+    for row in rows[1:]:  # Skip the header row
+        cols = row.find_all('td')
+        cols = [ele.text.strip() for ele in cols]
+        data.append(cols)
+
+    # Extract headers
+    headers = [header.text.strip() for header in rows[0].find_all('th')]
+
+    # Convert to DataFrame
+    df = pd.DataFrame(data, columns=headers)
+    print(df.head())
+
+    # Save to Excel or CSV
+    df.to_excel("rera_data.xlsx", index=False)
+    # Or, to save as CSV
+    df.to_csv("rera_data.csv", index=False)
+else:
+    print("No table found on the page.")
