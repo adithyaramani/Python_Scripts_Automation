@@ -1,0 +1,32 @@
+!apt-get -qq update
+!apt-get install -y -qq poppler-utils tesseract-ocr
+!pip install -q pdf2image pytesseract python-docx pillow
+
+from google.colab import files
+from pdf2image import convert_from_path
+import pytesseract
+from docx import Document
+
+# Step 1: Upload PDF
+uploaded = files.upload()
+pdf_filename = list(uploaded.keys())[0]
+print("Uploaded:", pdf_filename)
+
+# Step 2: Convert PDF pages to images & OCR
+print("Extracting text with OCR...")
+images = convert_from_path(pdf_filename, dpi=300)  # higher DPI = better OCR
+doc = Document()
+
+for i, img in enumerate(images, start=1):
+    text = pytesseract.image_to_string(img, lang="eng")
+    doc.add_paragraph(f"===== PAGE {i} =====")
+    doc.add_paragraph(text.strip())
+    print(f"Processed page {i}/{len(images)}")
+
+# Step 3: Save as Word file
+output_file = "contract_text.docx"
+doc.save(output_file)
+print(f"✅ Saved extracted contract to {output_file}")
+
+# Step 4: Download Word file
+files.download(output_file)
