@@ -1,0 +1,26 @@
+# Requests is an open source library to provides an easy-to-use interface that makes working with HTTP very simple, which means it simplifies the process of sending and receiving data from websites by providing a uniform interface for both GET and POST methods.
+# pdfplumber is another open source library to extract data from any pdf
+
+import requests
+import pdfplumber
+
+def download_file(url):
+# in the place of url, pls add the url of the required invoice from which we are going to extract data
+  local_filename = url.split('/')[-1]
+  with requests.get(url) as r:
+    with open(local_filename, 'wb') as f:
+      f.write(r.content)
+  return local_filename
+
+invoice_url = # enter the url of the invoice
+invoice = download_file(invoice_url)
+
+with pdfplumber.open(invoice) as pdf:
+  page = pdf.pages[0]
+  text = page.extract_text()
+
+print(text)  # we will get the output here as a the invoice in a row wise format
+
+for row in text.split('\n')
+  if row.startswith('Balance Due'):
+      balance = row.split()[-1]
