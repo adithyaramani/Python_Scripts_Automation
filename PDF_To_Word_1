@@ -1,0 +1,35 @@
+# Install libraries
+!pip install pytesseract
+!pip install pdf2image
+!pip install python-docx
+!apt install poppler-utils
+
+import pytesseract
+from pdf2image import convert_from_path
+from docx import Document
+from google.colab import files
+
+# Step 1: Upload the PDF
+uploaded = files.upload()
+filename = next(iter(uploaded))
+
+# Step 2: Convert PDF to images
+pages = convert_from_path(filename)
+
+# Step 3: OCR each page and extract text
+doc = Document()
+
+for page_number, page in enumerate(pages):
+    text = pytesseract.image_to_string(page)
+    if text.strip():
+        doc.add_paragraph(text.strip())
+    else:
+        doc.add_paragraph("[No readable text found on page]")
+    doc.add_page_break()
+
+# Step 4: Save as Word
+output_filename = "Extracted_Text_OCR.docx"
+doc.save(output_filename)
+
+# Step 5: Download Word file
+files.download(output_filename)
