@@ -1,0 +1,72 @@
+import requests
+from bs4 import BeautifulSoup
+
+
+# Making a GET request
+r = requests.get('https://www.geeksforgeeks.org/python-programming-language/')
+
+# Parsing the HTML
+soup = BeautifulSoup(r.content, 'html.parser')
+
+# Check if the div exists before trying to find content within it.
+s = soup.find('div', class_='entry-content')
+if s:
+    content = s.find_all('p')
+    print(content)
+else:
+    print("Could not find a div with class 'entry-content'")
+
+
+from lxml import html
+import requests
+
+# Define the URL of the website to scrape
+url = 'https://example.com'
+
+# Send an HTTP request to the website and retrieve the HTML content
+response = requests.get(url)
+
+# Parse the HTML content using lxml
+tree = html.fromstring(response.content)
+
+# Extract specific elements from the HTML tree using XPath
+# For example, let's extract the titles of all the links on the page
+link_titles = tree.xpath('//a/text()')
+
+# Print the extracted link titles
+for title in link_titles:
+    print(title)
+
+
+import urllib.request
+
+# URL of the web page to fetch
+url = 'https://www.example.com'
+
+try:
+    # Open the URL and read its content
+    response = urllib.request.urlopen(url)
+    
+    # Read the content of the response
+    data = response.read()
+    
+    # Decode the data (if it's in bytes) to a string
+    html_content = data.decode('utf-8')
+    
+    # Print the HTML content of the web page
+    print(html_content)
+
+except Exception as e:
+    print("Error fetching URL:", e)
+
+
+from bs4 import BeautifulSoup
+import requests
+
+url = 'https://rera.karnataka.gov.in/home?language=en'
+
+page = requests.get(url)
+
+soup = BeautifulSoup(page.text, 'html')
+
+print(soup.prettify())
